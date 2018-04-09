@@ -6,7 +6,7 @@ var score = 0;
 var lost = false;
 var difficulty = 0;
 var disortionStrength = 10;
-var difficultyClimb = 60*3;
+var difficultyClimb = 60*5;
 var j = 0;
 var disortion = 0;
 var frames = 0;
@@ -19,7 +19,6 @@ function setup(){
 function calculateDificulty(){
     if(frames % difficultyClimb == 0){
         console.log("harder");
-        background(255);
         difficulty+= 5;
         if(difficulty >= 50){
             difficulty = 50;
