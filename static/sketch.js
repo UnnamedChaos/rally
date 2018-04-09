@@ -9,14 +9,15 @@ var disortionStrength = 10;
 var difficultyClimb = 60*20;
 var j = 0;
 var disortion = 0;
+var frames = 0;
 function setup(){
     createCanvas(480,640);
     car = new Car();
     roads.push(new Road());
+    frames = 0;
 }
-function draw(){
-    background(0);
-    if(frameCount % difficultyClimb == 0){
+function calculateDificulty(){
+    if(frames % difficultyClimb == 0){
         console.log("harder");
         background(255);
         difficulty+= 5;
@@ -28,36 +29,65 @@ function draw(){
             disortionGap = 20;
         }
     }
-    
-    
+}
+function generateRoad(){
+    if(frames % 5 == 0){
+        score++;
+        if(frames % disortionGap == 0){
+            j = random(1);
+            j = round(j);
+            if(j == 0){
+                disortionOrientation = -1;
+            }
+            else{
+                disortionOrientation = 1;
+            }
+        }
+        var r = new Road();
+        r.gapWidth -= difficulty * 2
+        if(disortion >= width/2 - r.gapWidth / 2){
+            disortionOrientation = -1 * disortionOrientation;
+            disortion = width/2 - r.gapWidth / 2;
+        }else if (disortion <= -(width/2 - r.gapWidth / 2) ){
+            disortionOrientation = -1 * disortionOrientation;
+            disortion = -(width/2 - r.gapWidth / 2);
+        }
+        disortion += disortionOrientation * disortionStrength;
+        r.offset = disortion;
+        roads.push(r);
+    }
+}
+function drawInterface(){
+    textSize(32);
+    fill(color(255));
+    textAlign(RIGHT,TOP);
+    text("Score: " + score , width -10, 0);
+    textAlign(LEFT,TOP);
+    text("Difficulty: " + (difficulty/5) ,10, 0);
+}
+function drawGameOverScreen(){
+    textSize(32);
+    fill(color(255));
+    textAlign(CENTER);
+    text("GAME OVER", width/2, height/2);
+    textSize(20);
+    text("Score: " + score, width/2, height/2 + 60);
+    textSize(20);
+    text("Click to restart",width/2, height/2 + 120);
+}
+function drawDificultyBar(){
+    fill(color(200,30,30));
+    var dif = frames % difficultyClimb;
+    dif = dif/(difficultyClimb) ;
+    rect(0,height - 5,dif*width,5);
+}
+function draw(){
+    background(0);
+    frames++;
+    calculateDificulty();
     if(!lost){
         //new roads
-        if(frameCount % 5 == 0){
-            score++;
-            if(frameCount % disortionGap == 0){
-                j = random(1);
-                j = round(j);
-                if(j == 0){
-                    disortionOrientation = -1;
-                }
-                else{
-                    disortionOrientation = 1;
-                }
-            }
-            var r = new Road();
-            r.gapWidth -= difficulty * 2
-            if(disortion >= width/2 - r.gapWidth / 2){
-                disortionOrientation = -1 * disortionOrientation;
-                disortion = width/2 - r.gapWidth / 2;
-            }else if (disortion <= -(width/2 - r.gapWidth / 2) ){
-                disortionOrientation = -1 * disortionOrientation;
-                disortion = -(width/2 - r.gapWidth / 2);
-            }
-            disortion += disortionOrientation * disortionStrength;
-            r.offset = disortion;
-            roads.push(r);
-        }
-        
+        generateRoad();
         //raods
         for(var i = roads.length -1; i >= 0; i--){
             roads[i].update();
@@ -73,26 +103,11 @@ function draw(){
         }
         car.update();
         car.draw();
-        textSize(32);
-        fill(color(255));
-        textAlign(RIGHT,TOP);
-        text("Score: " + score , width -10, 0);
-        textAlign(LEFT,TOP);
-        text("Difficulty: " + (difficulty/5) ,10, 0);
-        fill(color(200,30,30));
-        var dif = frameCount % difficultyClimb;
-        dif = dif/(difficultyClimb) ;
-        rect(0,height - 5,dif*width,5);
+        drawInterface();
+        drawDificultyBar();
     }
     else{
-        textSize(32);
-        fill(color(255));
-        textAlign(CENTER);
-        text("GAME OVER", width/2, height/2);
-        textSize(20);
-        text("Score: " + score, width/2, height/2 + 60);
-        textSize(20);
-        text("Click to restart",width/2, height/2 + 120);
+        drawGameOverScreen();
     }
 }
 function mouseClicked() {
@@ -108,6 +123,7 @@ function mouseClicked() {
         difficultyClimb = 60*20;
         j = 0;
         disortion = 0;
+        frames = 0;
         setup();
     }
 }
