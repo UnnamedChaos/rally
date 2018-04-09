@@ -6,7 +6,7 @@ var score = 0;
 var lost = false;
 var difficulty = 0;
 var disortionStrength = 10;
-var difficultyClimb = 60*20;
+var difficultyClimb = 60*3;
 var j = 0;
 var disortion = 0;
 var frames = 0;
@@ -91,8 +91,18 @@ function draw(){
         //raods
         for(var i = roads.length -1; i >= 0; i--){
             roads[i].update();
-            roads[i].draw();
-            if(roads[i].y >= height){
+            if(i > 0){
+                if(i < roads.length -1){
+                    roads[i].draw(roads[i-1].offset,roads[i+1].offset);
+                }
+                else{
+                    roads[i].draw(roads[i-1].offset,0);
+                }
+            }
+            else{
+                roads[i].draw(0);
+            }
+            if(roads[i].y >= height + roads[i].barHeight){
                 roads.splice(i,1);
             }
     
