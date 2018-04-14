@@ -6,6 +6,7 @@ function Road(){
     this.y = -this.barHeight;
     this.offset = 0;
     this.color = color(200);
+    this.straight = false;
     this.update = function(){
         this.y += this.speed;
     }
