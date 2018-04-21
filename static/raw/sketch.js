@@ -11,10 +11,17 @@ function setup(){
     box = new Box();
     util = new Utility();
     websocket = new Websocket();
-    websocket.connect();
+    websocket.connect(greeting,generate);
 }
 
+function generate(coin){
+    console.log("generate");
+    box.spawn();
+}
 
+function greeting(greeting) {
+    console.log(JSON.parse(greeting.body).content);
+}
 function draw(){
     background(0);
     //coins
@@ -25,7 +32,7 @@ function draw(){
         if(coin.speed == 0){
             if(util.over(mouseX,mouseY,coin.posX,coin.posY,coin.boxWidth,coin.boxHeight,10,10)){
                 score += coin.value;
-                websocket.sendName();
+                websocket.generate(coin.value);
                 coins.splice(i,1);
             }
         }
